@@ -1,0 +1,110 @@
+/**creates donors table in junk schema. after this is created, use python job to process/apply careers from donor occupation **/
+
+    with contributions_with_id as (
+    select 
+        *, 
+        LEFT(donor_first_name,1)||donor_last_name||donor_zip||left(donor_city, 4)||left(donor_original_address,2) as donor_id
+    from 
+        `nyu-cap-ae.junk.individual_contributions_parsed_addresses`
+),
+
+donor_summary as (
+    select 
+        donor_id,
+        ifnull(count(contribution_amount), 0) as NUMBER_CONTRIBUTIONS,
+        ifnull(sum(contribution_amount), 0) as TOTAL_CONTRIBUTIONS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_party = 'REPUBLICAN' THEN contribution_amount END), 0) as REPUBLICAN_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_party = 'REPUBLICAN' THEN contribution_amount END), 0) as REPUBLICAN_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_party = 'DEMOCRAT' THEN contribution_amount END), 0) as DEMOCRAT_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_party = 'DEMOCRAT' THEN contribution_amount END), 0) as DEMOCRAT_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_party NOT IN ('REPUBLICAN', 'DEMOCRAT') THEN contribution_amount END), 0) as OTHER_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_party NOT IN ('REPUBLICAN', 'DEMOCRAT') THEN contribution_amount END), 0) as OTHER_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'HOUSE' THEN contribution_amount END), 0) as HOUSE_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'HOUSE' THEN contribution_amount END), 0) as HOUSE_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SENATE' THEN contribution_amount END), 0) as SENATE_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SENATE' THEN contribution_amount END), 0) as SENATE_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'TREASURER' THEN contribution_amount END), 0) as TREASURER_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'TREASURER' THEN contribution_amount END), 0) as TREASURER_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_JUSTICE' THEN contribution_amount END), 0) as SUPREME_COURT_JUSTICE_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_JUSTICE' THEN contribution_amount END), 0) as SUPREME_COURT_JUSTICE_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_CHIEF_JUSTICE' THEN contribution_amount END), 0) as SUPREME_COURT_CHIEF_JUSTICE_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_CHIEF_JUSTICE' THEN contribution_amount END), 0) as SUPREME_COURT_CHIEF_JUSTICE_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_TEACHERS_RETIREMENT' THEN contribution_amount END), 0) as STATE_TEACHERS_RETIREMENT_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_TEACHERS_RETIREMENT' THEN contribution_amount END), 0) as STATE_TEACHERS_RETIREMENT_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_BOARD_OF_EDUCATION' THEN contribution_amount END), 0) as STATE_BOARD_OF_EDUCATION_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_BOARD_OF_EDUCATION' THEN contribution_amount END), 0) as STATE_BOARD_OF_EDUCATION_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SECRETARY_OF_STATE' THEN contribution_amount END), 0) as SECRETARY_OF_STATE_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SECRETARY_OF_STATE' THEN contribution_amount END), 0) as SECRETARY_OF_STATE_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SCHOOL_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as SCHOOL_EMPLOYEES_RETIREMENT_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SCHOOL_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as SCHOOL_EMPLOYEES_RETIREMENT_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'PUBLIC_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as PUBLIC_EMPLOYEES_RETIREMENT_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'PUBLIC_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as PUBLIC_EMPLOYEES_RETIREMENT_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'POLICE_AND_FIRE_PENSION_FUND' THEN contribution_amount END), 0) as POLICE_AND_FIRE_PENSION_FUND_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'POLICE_AND_FIRE_PENSION_FUND' THEN contribution_amount END), 0) as POLICE_AND_FIRE_PENSION_FUND_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'GOVERNOR' THEN contribution_amount END), 0) as GOVERNOR_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'GOVERNOR' THEN contribution_amount END), 0) as GOVERNOR_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'COURT_OF_APPEALS_JUDGE' THEN contribution_amount END), 0) as COURT_OF_APPEALS_JUDGE_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'COURT_OF_APPEALS_JUDGE' THEN contribution_amount END), 0) as COURT_OF_APPEALS_JUDGE_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'AUDITOR' THEN contribution_amount END), 0) as AUDITOR_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'AUDITOR' THEN contribution_amount END), 0) as AUDITOR_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'ATTORNEY_GENERAL' THEN contribution_amount END), 0) as ATTORNEY_GENERAL_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'ATTORNEY_GENERAL' THEN contribution_amount END), 0) as ATTORNEY_GENERAL_DOLLARS,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'UNDECLARED_DONATIONS' THEN contribution_amount END), 0) as UNDECLARED_DONATIONS,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'UNDECLARED_DONATIONS' THEN contribution_amount END), 0) as UNDECLARED_DOLLARS
+    from contributions_with_id 
+    group by 1
+),
+
+donor_demo as (
+    select
+        donor_id 
+        , donor_first_name
+        , donor_last_name
+        , donor_occupation
+        , donor_original_address
+        , donor_city
+        , donor_state
+        , donor_zip
+        , MAX(CAST(LEFT(report_year, 4) AS NUMERIC))
+    from contributions_with_id a
+    group by 1,2,3,4,5,6,7,8
+)
+
+select 
+    a.donor_id
+    , c.donor_first_name 
+    , c.donor_last_name
+    , c.donor_occupation
+    , c.donor_original_address 
+    , c.donor_city
+    , c.donor_state
+    , c.donor_zip
+    , NUMBER_CONTRIBUTIONS 
+    , TOTAL_CONTRIBUTIONS
+    , REPUBLICAN_DONATIONS
+    , DEMOCRAT_DONATIONS
+    , REPUBLICAN_DOLLARS
+    , DEMOCRAT_DOLLARS
+    , OTHER_DOLLARS
+    , OTHER_DONATIONS
+    , HOUSE_DONATIONS
+    , HOUSE_DOLLARS
+    , SENATE_DONATIONS
+    , SENATE_DOLLARS
+    , TREASURER_DONATIONS
+    , TREASURER_DOLLARS
+    , SECRETARY_OF_STATE_DONATIONS
+    , SECRETARY_OF_STATE_DOLLARS
+    , GOVERNOR_DONATIONS
+    , GOVERNOR_DOLLARS
+    , AUDITOR_DONATIONS
+    , AUDITOR_DOLLARS
+    , ATTORNEY_GENERAL_DONATIONS
+    , ATTORNEY_GENERAL_DOLLARS
+    , UNDECLARED_DONATIONS
+    , UNDECLARED_DOLLARS
+ from 
+    donor_summary a 
+    inner join contributions_with_id b on a.donor_id = b.donor_id
+    inner join donor_demo c on a.donor_id = c.donor_id
+ group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32;

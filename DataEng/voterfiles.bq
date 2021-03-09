@@ -1,0 +1,6 @@
+/** uses voterfiles table loaded from DataPrep and adds the donor_id created in the donor table to join 
+the two datasets together **/
+
+select *,
+LEFT(FIRST_NAME,1)||LAST_NAME||RESIDENTIAL_ZIP||LEFT(RESIDENTIAL_CITY,4)||LEFT(RESIDENTIAL_ADDRESS1,2) as donor_id
+from `nyu-cap-ae.junk.voterfiles_dataprep`
