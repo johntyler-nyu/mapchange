@@ -1,22 +1,17 @@
-    with contributions_with_id as (
+CREATE OR REPLACE TABLE `nyu-cap-ae.elt_ohio.donors` AS
+
+    with contributions_with_ids as (
     select 
-        *, 
-        LEFT(donor_first_name,1)||donor_last_name||donor_zip||left(donor_city, 4)||left(donor_original_address,2) as donor_id
+        *
+        , LEFT(donor_first_name,1)||donor_last_name||donor_zip||left(donor_city, 4)||left(donor_original_address,2) as donor_id
     from 
         `nyu-cap-ae.junk.individual_contributions_parsed_addresses`
 ),
 
 donor_summary as (
     select 
-        donor_id
-        , donor_first_name
-        , donor_last_name
-        , donor_occupation
-        , donor_original_address
-        , donor_city
-        , donor_state
-        , donor_zip
-        , ifnull(count(contribution_amount), 0) as NUMBER_CONTRIBUTIONS,
+        donor_id,
+        ifnull(count(contribution_amount), 0) as NUMBER_CONTRIBUTIONS,
         ifnull(sum(contribution_amount), 0) as TOTAL_CONTRIBUTIONS,
         ifnull(count(CASE WHEN contribution_amount > 0 and candidate_party = 'REPUBLICAN' THEN contribution_amount END), 0) as REPUBLICAN_DONATIONS,
         ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_party = 'REPUBLICAN' THEN contribution_amount END), 0) as REPUBLICAN_DOLLARS,
@@ -56,19 +51,28 @@ donor_summary as (
         ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'ATTORNEY_GENERAL' THEN contribution_amount END), 0) as ATTORNEY_GENERAL_DOLLARS,
         ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'UNDECLARED_DONATIONS' THEN contribution_amount END), 0) as UNDECLARED_DONATIONS,
         ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'UNDECLARED_DONATIONS' THEN contribution_amount END), 0) as UNDECLARED_DOLLARS
-    from contributions_with_id 
-    group by 1,2,3,4,5,6,7,8
-)
+    from contributions_with_ids  
+    group by 1
+), 
 
-select 
+donor_occupation_demo as (
+    select 
+        LEFT(donor_first_name,1)||donor_last_name||donor_zip||left(donor_city, 4)||left(donor_original_address,2) as donor_id,
+        donor_occupation,
+        row_number() over(partition by LEFT(donor_first_name,2)||donor_last_name||donor_zip||left(donor_city, 4)||left(donor_original_address,2)
+            order by report_year desc) as row_rank
+    from `nyu-cap-ae.junk.individual_contributions_parsed_addresses`
+),
+
+final as (select 
     a.donor_id
-    , a.donor_first_name 
-    , a.donor_last_name
-    , a.donor_occupation
-    , a.donor_original_address 
-    , a.donor_city
-    , a.donor_state
-    , a.donor_zip
+    , b.donor_first_name
+    , b.donor_last_name
+    , c.donor_occupation
+    , b.donor_state
+    , b.donor_city
+    , b.state_name
+    , b.donor_zip
     , NUMBER_CONTRIBUTIONS 
     , TOTAL_CONTRIBUTIONS
     , REPUBLICAN_DONATIONS
@@ -93,6 +97,19 @@ select
     , ATTORNEY_GENERAL_DOLLARS
     , UNDECLARED_DONATIONS
     , UNDECLARED_DOLLARS
+    , row_number() over(partition by a.donor_id
+        order by a.donor_id) as final_row_rank
  from 
     donor_summary a 
- group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32;
+    left join contributions_with_ids b on a.donor_id = b.donor_id
+    left join donor_occupation_demo c on a.donor_id = c.donor_id 
+where c.row_rank = 1
+group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32)
+
+select 
+    *
+from final where final_row_rank = 1 
+
+
+--528,696 unique donors 
+--372,233,419.E8 contribution $ original 373,808,558.E8
