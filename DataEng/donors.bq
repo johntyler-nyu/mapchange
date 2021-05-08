@@ -108,8 +108,121 @@ group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27
 
 select 
     *
-from final where final_row_rank = 1 
+from final where final_row_rank = 1; 
 
+-- Drop the final_row_rank column from our data
+alter table `nyu-cap-ae.elt_ohio.donors` 
+drop column if exists final_row_rank;
 
---528,696 unique donors 
---372,233,419.E8 contribution $ original 373,808,558.E8
+-- Create the career for each occupational token matched
+CREATE OR REPLACE TABLE `nyu-cap-ae.junk.donor_id_occ_token` as
+
+select
+d.donor_id,
+d.donor_occupation,
+
+case when regexp_contains(d.donor_occupation, r'ATTORNEY') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'ATTORNEY') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'COUNCIL') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'LAW') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'COUNSEL') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'ATTY') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'PORTER WRIGHT') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'ROETZEL & ANDRESS') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'DICKINSON WRIGHT PLLC') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'JONES DAY') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'BRICKER & ECKLER') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'TAFT STETTINIUS & HOLLISTERR') = true then 'Legal'
+when regexp_contains(d.donor_occupation, r'OIL') = true then 'Energy'
+when regexp_contains(d.donor_occupation, r'GAS') = true then 'Energy'
+when regexp_contains(d.donor_occupation, r'HEATING') = true then 'Energy'
+when regexp_contains(d.donor_occupation, r'COOLING') = true then 'Energy'
+when regexp_contains(d.donor_occupation, r'FARM') = true then 'Farming'
+when regexp_contains(d.donor_occupation, r'OWNER OF DOG BOARDING KENNEL') = true then 'Petcare'
+when regexp_contains(d.donor_occupation, r'STUDENT') = true then 'Student'
+when regexp_contains(d.donor_occupation, r'TRAVEL') = true then 'Tourism'
+when regexp_contains(d.donor_occupation, r'TEACHER') = true then 'Education'
+when regexp_contains(d.donor_occupation, r'SCHOOL') = true then 'Education'
+when regexp_contains(d.donor_occupation, r'UNIVERSITY') = true then 'Education'
+when regexp_contains(d.donor_occupation, r'PROF') = true then 'Education'
+when regexp_contains(d.donor_occupation, r'GUIDANCE') = true then 'Education'
+when regexp_contains(d.donor_occupation, r'PROFESSOR') = true then 'Education'
+when regexp_contains(d.donor_occupation, r'INSUR') = true then 'Insurance'
+when regexp_contains(d.donor_occupation, r'AUTO') = true then 'Automotive'
+when regexp_contains(d.donor_occupation, r'MOTOR') = true then 'Automotive'
+when regexp_contains(d.donor_occupation, r'MUNICIPAL') = true then 'Government'
+when regexp_contains(d.donor_occupation, r'CITY') = true then 'Government'
+when regexp_contains(d.donor_occupation, r'COUNTY') = true then 'Government'
+when regexp_contains(d.donor_occupation, r'GOVERN') = true then 'Government'
+when regexp_contains(d.donor_occupation, r'TOWN') = true then 'Government'
+when regexp_contains(d.donor_occupation, r'OHIO') = true then 'Government'
+when regexp_contains(d.donor_occupation, r'STATE') = true then 'Government'
+when regexp_contains(d.donor_occupation, r'DISTRICT') = true then 'Government'
+when regexp_contains(d.donor_occupation, r'FEDERA') = true then 'Government'
+when regexp_contains(d.donor_occupation, r'LOBBYIST') = true then 'Government'
+when regexp_contains(d.donor_occupation, r'JUDG') = true then 'Government'
+when regexp_contains(d.donor_occupation, r'PHARMACY') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'HEALTH') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'DOCT') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'CHIRO') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'SURGER') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'NURSE') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'PHYSIC') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'DENTIST') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'OPTOM') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'COUNSELOR') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'COUNSELING') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'HOSPIT') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'CLINIC') = true then 'Healthcare'
+when regexp_contains(d.donor_occupation, r'FOUNDATION') = true then 'Non-Profit'
+when regexp_contains(d.donor_occupation, r'DEVELOPER') = true then 'Technology'
+when regexp_contains(d.donor_occupation, r'TECH') = true then 'Technology'
+when regexp_contains(d.donor_occupation, r'IT') = true then 'Technology'
+when regexp_contains(d.donor_occupation, r'PROGRAMMER') = true then 'Technology'
+when regexp_contains(d.donor_occupation, r'NOT EMPLOYED') = true then 'Unemployed'
+when regexp_contains(d.donor_occupation, r'NONE') = true then 'Unemployed'
+when regexp_contains(d.donor_occupation, r'REAL ESTATE') = true then 'Real Estate'
+when regexp_contains(d.donor_occupation, r'ESTAT') = true then 'Real Estate'
+when regexp_contains(d.donor_occupation, r'REALTY') = true then 'Real Estate'
+when regexp_contains(d.donor_occupation, r'RESTAUR') = true then 'Food Services'
+when regexp_contains(d.donor_occupation, r'GROCE') = true then 'Food Services'
+when regexp_contains(d.donor_occupation, r'FOOD') = true then 'Food Services'
+when regexp_contains(d.donor_occupation, r'HOMEMAK') = true then 'Self-Employed'
+when regexp_contains(d.donor_occupation, r'HOUSEWIFE') = true then 'Self-Employed'
+when regexp_contains(d.donor_occupation, r'SALES') = true then 'Self-Employed'
+when regexp_contains(d.donor_occupation, r'BUSINESS OWNER') = true then 'Sales (Generic)'
+when regexp_contains(d.donor_occupation, r'CPA') = true then 'Finance/Accounting'
+when regexp_contains(d.donor_occupation, r'FINANC') = true then 'Finance/Accounting'
+when regexp_contains(d.donor_occupation, r'AUDITOR') = true then 'Finance/Accounting'
+when regexp_contains(d.donor_occupation, r'TAX') = true then 'Finance/Accounting'
+when regexp_contains(d.donor_occupation, r'INVEST') = true then 'Finance/Accounting'
+when regexp_contains(d.donor_occupation, r'WEALTH') = true then 'Finance/Accounting'
+when regexp_contains(d.donor_occupation, r'BANK') = true then 'Finance/Accounting'
+when regexp_contains(d.donor_occupation, r'No Occupation Listed') = true then 'No Occupation Listed'
+when regexp_contains(d.donor_occupation, r'NOT REQUIRED') = true then 'No Occupation Listed'
+when regexp_contains(d.donor_occupation, r'N/A') = true then 'No Occupation Listed'
+when regexp_contains(d.donor_occupation, r'NA') = true then 'No Occupation Listed'
+when regexp_contains(d.donor_occupation, r'CONSULT') = true then 'Professional Services'
+when regexp_contains(d.donor_occupation, r'WRITER') = true then 'Professional Services'
+when regexp_contains(d.donor_occupation, r'THERAPIST') = true then 'Professional Services'
+when regexp_contains(d.donor_occupation, r'RETIR') = true then 'Self-Employed/Retired'
+when regexp_contains(d.donor_occupation, r'SELF') = true then 'Self-Employed/Retired'
+when regexp_contains(d.donor_occupation, r'ARTIST') = true then 'Self-Employed/Retired'
+when regexp_contains(d.donor_occupation, r'NOT EMPLOYED/RETIRED') = true then 'Self-Employed/Retired'
+when regexp_contains(d.donor_occupation, r'LUMBER') = true then 'Industrial/Manufacturing'
+when regexp_contains(d.donor_occupation, r'ELECTR') = true then 'Industrial/Manufacturing'
+when regexp_contains(d.donor_occupation, r'METAL') = true then 'Industrial/Manufacturing'
+when regexp_contains(d.donor_occupation, r'MACHINE') = true then 'Industrial/Manufacturing'
+when regexp_contains(d.donor_occupation, r'MANUFAC') = true then 'Industrial/Manufacturing'
+when regexp_contains(d.donor_occupation, r'ENGINEER') = true then 'Engineering, Design, Architecture'
+when regexp_contains(d.donor_occupation, r'ARCHITECT') = true then 'Engineering, Design, Architecture'
+
+else 'UNK' end as token
+
+from nyu-cap-ae.elt_ohio.donors as d; 
+
+-- Create final donors table
+create or replace table `nyu-cap-ae.elt_ohio.donors` as
+select a.*, b.token as donor_career
+from `nyu-cap-ae.elt_ohio.donors` a 
+inner join `nyu-cap-ae.junk.donor_id_occ_token` b on a.donor_id = b.donor_id;
