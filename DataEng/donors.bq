@@ -298,11 +298,11 @@ from nyu-cap-ae.elt_ohio.donors as d;
 create or replace table `nyu-cap-ae.elt_ohio.donors` as
 select
     a.donor_id
-    , donor_first_name
-    , donor_last_name
-    , donor_occupation
+    , a.donor_first_name
+    , a.donor_last_name
+    , a.donor_occupation
     , b.token as donor_profession
-    , donor_city
+    , a.donor_city
     , a.donor_state
     , a.donor_zip
     , a.donor_zip4
