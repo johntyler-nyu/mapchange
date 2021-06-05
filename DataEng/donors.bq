@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE `nyu-cap-ae.elt_ohio.donors` AS
+create or replace table `nyu-cap-ae.elt_ohio.donors` as
 
     with contributions_with_ids as (
     select
@@ -13,44 +13,44 @@ donor_summary as (
         donor_id,
         ifnull(count(contribution_amount), 0) as NUMBER_CONTRIBUTIONS,
         ifnull(sum(contribution_amount), 0) as TOTAL_CONTRIBUTIONS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_party = 'REPUBLICAN' THEN contribution_amount END), 0) as REPUBLICAN_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_party = 'REPUBLICAN' THEN contribution_amount END), 0) as REPUBLICAN_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_party = 'DEMOCRAT' THEN contribution_amount END), 0) as DEMOCRAT_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_party = 'DEMOCRAT' THEN contribution_amount END), 0) as DEMOCRAT_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_party NOT IN ('REPUBLICAN', 'DEMOCRAT') THEN contribution_amount END), 0) as OTHER_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_party NOT IN ('REPUBLICAN', 'DEMOCRAT') THEN contribution_amount END), 0) as OTHER_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'HOUSE' THEN contribution_amount END), 0) as HOUSE_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'HOUSE' THEN contribution_amount END), 0) as HOUSE_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SENATE' THEN contribution_amount END), 0) as SENATE_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SENATE' THEN contribution_amount END), 0) as SENATE_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'TREASURER' THEN contribution_amount END), 0) as TREASURER_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'TREASURER' THEN contribution_amount END), 0) as TREASURER_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_JUSTICE' THEN contribution_amount END), 0) as SUPREME_COURT_JUSTICE_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_JUSTICE' THEN contribution_amount END), 0) as SUPREME_COURT_JUSTICE_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_CHIEF_JUSTICE' THEN contribution_amount END), 0) as SUPREME_COURT_CHIEF_JUSTICE_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_CHIEF_JUSTICE' THEN contribution_amount END), 0) as SUPREME_COURT_CHIEF_JUSTICE_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_TEACHERS_RETIREMENT' THEN contribution_amount END), 0) as STATE_TEACHERS_RETIREMENT_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_TEACHERS_RETIREMENT' THEN contribution_amount END), 0) as STATE_TEACHERS_RETIREMENT_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_BOARD_OF_EDUCATION' THEN contribution_amount END), 0) as STATE_BOARD_OF_EDUCATION_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_BOARD_OF_EDUCATION' THEN contribution_amount END), 0) as STATE_BOARD_OF_EDUCATION_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SECRETARY_OF_STATE' THEN contribution_amount END), 0) as SECRETARY_OF_STATE_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SECRETARY_OF_STATE' THEN contribution_amount END), 0) as SECRETARY_OF_STATE_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SCHOOL_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as SCHOOL_EMPLOYEES_RETIREMENT_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SCHOOL_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as SCHOOL_EMPLOYEES_RETIREMENT_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'PUBLIC_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as PUBLIC_EMPLOYEES_RETIREMENT_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'PUBLIC_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as PUBLIC_EMPLOYEES_RETIREMENT_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'POLICE_AND_FIRE_PENSION_FUND' THEN contribution_amount END), 0) as POLICE_AND_FIRE_PENSION_FUND_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'POLICE_AND_FIRE_PENSION_FUND' THEN contribution_amount END), 0) as POLICE_AND_FIRE_PENSION_FUND_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'GOVERNOR' THEN contribution_amount END), 0) as GOVERNOR_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'GOVERNOR' THEN contribution_amount END), 0) as GOVERNOR_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'COURT_OF_APPEALS_JUDGE' THEN contribution_amount END), 0) as COURT_OF_APPEALS_JUDGE_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'COURT_OF_APPEALS_JUDGE' THEN contribution_amount END), 0) as COURT_OF_APPEALS_JUDGE_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'AUDITOR' THEN contribution_amount END), 0) as AUDITOR_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'AUDITOR' THEN contribution_amount END), 0) as AUDITOR_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'ATTORNEY_GENERAL' THEN contribution_amount END), 0) as ATTORNEY_GENERAL_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'ATTORNEY_GENERAL' THEN contribution_amount END), 0) as ATTORNEY_GENERAL_DOLLARS,
-        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'UNDECLARED_DONATIONS' THEN contribution_amount END), 0) as UNDECLARED_DONATIONS,
-        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'UNDECLARED_DONATIONS' THEN contribution_amount END), 0) as UNDECLARED_DOLLARS
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_party = 'REPUBLICAN' THEN contribution_amount END), 0) as republican_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_party = 'REPUBLICAN' THEN contribution_amount END), 0) as republican_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_party = 'DEMOCRAT' THEN contribution_amount END), 0) as democrat_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_party = 'DEMOCRAT' THEN contribution_amount END), 0) as democrat_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_party NOT IN ('REPUBLICAN', 'DEMOCRAT') THEN contribution_amount END), 0) as other_party_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_party NOT IN ('REPUBLICAN', 'DEMOCRAT') THEN contribution_amount END), 0) as other_party_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'HOUSE' THEN contribution_amount END), 0) as house_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'HOUSE' THEN contribution_amount END), 0) as house_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SENATE' THEN contribution_amount END), 0) as senate_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SENATE' THEN contribution_amount END), 0) as senate_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'TREASURER' THEN contribution_amount END), 0) as treasurer_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'TREASURER' THEN contribution_amount END), 0) as treasurer_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_JUSTICE' THEN contribution_amount END), 0) as supreme_court_justice_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_JUSTICE' THEN contribution_amount END), 0) as supreme_court_justice_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_CHIEF_JUSTICE' THEN contribution_amount END), 0) as supreme_court_cheif_justice_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SUPREME_COURT_CHIEF_JUSTICE' THEN contribution_amount END), 0) as supreme_court_chief_justice_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_TEACHERS_RETIREMENT' THEN contribution_amount END), 0) as state_teachers_retirement_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_TEACHERS_RETIREMENT' THEN contribution_amount END), 0) as state_teachers_retirement_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_BOARD_OF_EDUCATION' THEN contribution_amount END), 0) as state_board_of_education_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'STATE_BOARD_OF_EDUCATION' THEN contribution_amount END), 0) as state_board_of_education_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SECRETARY_OF_STATE' THEN contribution_amount END), 0) as secretary_of_state_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SECRETARY_OF_STATE' THEN contribution_amount END), 0) as secretary_of_state_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'SCHOOL_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as school_employees_retirement_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'SCHOOL_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as school_employees_retirement_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'PUBLIC_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as publice_employees_retirement_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'PUBLIC_EMPLOYEES_RETIREMENT' THEN contribution_amount END), 0) as public_employees_retirement_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'POLICE_AND_FIRE_PENSION_FUND' THEN contribution_amount END), 0) as police_and_fire_pension_fund_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'POLICE_AND_FIRE_PENSION_FUND' THEN contribution_amount END), 0) as police_and_fire_pension_fund_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'GOVERNOR' THEN contribution_amount END), 0) as governor_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'GOVERNOR' THEN contribution_amount END), 0) as governor_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'COURT_OF_APPEALS_JUDGE' THEN contribution_amount END), 0) as court_of_appeals_judge_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'COURT_OF_APPEALS_JUDGE' THEN contribution_amount END), 0) as court_of_appeals_judge_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'AUDITOR' THEN contribution_amount END), 0) as auditor_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'AUDITOR' THEN contribution_amount END), 0) as auditor_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'ATTORNEY_GENERAL' THEN contribution_amount END), 0) as attorney_general_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'ATTORNEY_GENERAL' THEN contribution_amount END), 0) as attorney_general_dollars,
+        ifnull(count(CASE WHEN contribution_amount > 0 and candidate_office = 'UNDECLARED_DONATIONS' THEN contribution_amount END), 0) as undeclared_donations,
+        ifnull(sum(CASE WHEN contribution_amount > 0 and candidate_office = 'UNDECLARED_DONATIONS' THEN contribution_amount END), 0) as undeclared_dollars
     from contributions_with_ids
     group by 1
 ),
@@ -64,47 +64,120 @@ donor_occupation_demo as (
     from `nyu-cap-ae.junk.individual_contributions_parsed_addresses`
 ),
 
-final as (select
-    a.donor_id
-    , b.donor_first_name
-    , b.donor_last_name
-    , c.donor_occupation
-    , b.donor_state
-    , b.donor_city
-    , b.state_name
-    , b.donor_zip
-    , NUMBER_CONTRIBUTIONS
-    , TOTAL_CONTRIBUTIONS
-    , REPUBLICAN_DONATIONS
-    , DEMOCRAT_DONATIONS
-    , REPUBLICAN_DOLLARS
-    , DEMOCRAT_DOLLARS
-    , OTHER_DOLLARS
-    , OTHER_DONATIONS
-    , HOUSE_DONATIONS
-    , HOUSE_DOLLARS
-    , SENATE_DONATIONS
-    , SENATE_DOLLARS
-    , TREASURER_DONATIONS
-    , TREASURER_DOLLARS
-    , SECRETARY_OF_STATE_DONATIONS
-    , SECRETARY_OF_STATE_DOLLARS
-    , GOVERNOR_DONATIONS
-    , GOVERNOR_DOLLARS
-    , AUDITOR_DONATIONS
-    , AUDITOR_DOLLARS
-    , ATTORNEY_GENERAL_DONATIONS
-    , ATTORNEY_GENERAL_DOLLARS
-    , UNDECLARED_DONATIONS
-    , UNDECLARED_DOLLARS
-    , row_number() over(partition by a.donor_id
-        order by a.donor_id) as final_row_rank
- from
-    donor_summary a
-    left join contributions_with_ids b on a.donor_id = b.donor_id
-    left join donor_occupation_demo c on a.donor_id = c.donor_id
-where c.row_rank = 1
-group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32)
+donor_address_demo as (
+    select
+        LEFT(donor_first_name,3)||LEFT(donor_last_name,2)||donor_zip||left(donor_city, 3)||left(donor_original_address,2) as donor_id
+        , donor_original_address
+        , address_number
+        , street_name_pre_directional
+        , street_name
+        , street_name_post_type as street_name_type
+        , street_name_post_directional
+        , occupancy_type
+        , occupancy_identifer
+        , usps_box_id
+        , row_number() over(partition by LEFT(donor_first_name,3)||LEFT(donor_last_name,2)||donor_zip||left(donor_city, 3)||left(donor_original_address,2)
+            order by report_year desc) as row_rank2
+    from `nyu-cap-ae.junk.individual_contributions_parsed_addresses`
+),
+
+donor_donations_by_year as (
+    select
+        LEFT(donor_first_name,3)||LEFT(donor_last_name,2)||donor_zip||left(donor_city, 3)||left(donor_original_address,2) as donor_id
+        , cast(left(report_year,4) as numeric) as donation_year
+        , sum(contribution_amount) as total_dollars_donated
+        , count(distinct(contribution_id)) as total_donations_made
+    from `nyu-cap-ae.junk.individual_contributions_parsed_addresses`
+    group by 1,2
+),
+
+final as (
+    select
+        a.donor_id
+        , b.donor_first_name
+        , b.donor_last_name
+        , c.donor_occupation
+        , b.donor_city
+        , b.donor_state
+        , b.donor_zip
+        , b.donor_zip4
+        , d.donor_original_address
+        , d.address_number
+        , d.street_name_pre_directional
+        , d.street_name
+        , d.street_name_type
+        , d.street_name_post_directional
+        , d.occupancy_type
+        , d.occupancy_identifer
+        , d.usps_box_id
+        , e.total_dollars_donated as dollars_donated_2000_cycle
+        , e.total_donations_made as donations_made_2000_cycle
+        , f.total_dollars_donated as dollars_donated_2002_cycle
+        , f.total_donations_made as donations_made_2002_cycle
+        , g.total_dollars_donated as dollars_donated_2004_cycle
+        , g.total_donations_made as donations_made_2004_cycle
+        , h.total_dollars_donated as dollars_donated_2006_cycle
+        , h.total_donations_made as donations_made_2006_cycle
+        , i.total_dollars_donated as dollars_donated_2008_cycle
+        , i.total_donations_made as donations_made_2008_cycle
+        , j.total_dollars_donated as dollars_donated_2010_cycle
+        , j.total_donations_made as donations_made_2010_cycle
+        , k.total_dollars_donated as dollars_donated_2012_cycle
+        , k.total_donations_made as donations_made_2012_cycle
+        , l.total_dollars_donated as dollars_donated_2014_cycle
+        , l.total_donations_made as donations_made_2014_cycle
+        , m.total_dollars_donated as dollars_donated_2016_cycle
+        , m.total_donations_made as donations_made_2016_cycle
+        , n.total_dollars_donated as dollars_donated_2018_cycle
+        , n.total_donations_made as donations_made_2018_cycle
+        , o.total_dollars_donated as dollars_donated_2020_cycle
+        , o.total_donations_made as donations_made_2020_cycle
+        , number_contributions as total_donations_made_all_time
+        , total_contributions as total_dollars_all_time
+        , republican_donations
+        , republican_dollars
+        , democrat_donations
+        , democrat_dollars
+        , other_party_dollars
+        , other_party_donations
+        , house_donations
+        , house_dollars
+        , senate_donations
+        , senate_dollars
+        , treasurer_donations
+        , treasurer_dollars
+        , secretary_of_state_donations
+        , secretary_of_state_dollars
+        , governor_donations
+        , governor_dollars
+        , auditor_donations
+        , auditor_dollars
+        , attorney_general_donations
+        , attorney_general_dollars
+        , undeclared_donations
+        , undeclared_dollars
+        , row_number() over(partition by a.donor_id
+            order by a.donor_id) as final_row_rank
+    from
+        donor_summary a
+        left join contributions_with_ids b on a.donor_id = b.donor_id
+        left join donor_occupation_demo c on a.donor_id = c.donor_id
+        left join donor_address_demo d on a.donor_id = d.donor_id
+        left join (select donor_id, sum(total_dollars_donated) as total_dollars_donated, sum(total_donations_made) as total_donations_made from donor_donations_by_year where donation_year IN (2000) group by 1) as e on a.donor_id = e.donor_id
+        left join (select donor_id, sum(total_dollars_donated) as total_dollars_donated, sum(total_donations_made) as total_donations_made from donor_donations_by_year where donation_year IN (2001,2002) group by 1) as f on a.donor_id = f.donor_id
+        left join (select donor_id, sum(total_dollars_donated) as total_dollars_donated, sum(total_donations_made) as total_donations_made from donor_donations_by_year where donation_year IN (2003,2004) group by 1) as g on a.donor_id = g.donor_id
+        left join (select donor_id, sum(total_dollars_donated) as total_dollars_donated, sum(total_donations_made) as total_donations_made from donor_donations_by_year where donation_year IN (2005,2006) group by 1) as h on a.donor_id = h.donor_id
+        left join (select donor_id, sum(total_dollars_donated) as total_dollars_donated, sum(total_donations_made) as total_donations_made from donor_donations_by_year where donation_year IN (2007,2008) group by 1) as i on a.donor_id = i.donor_id
+        left join (select donor_id, sum(total_dollars_donated) as total_dollars_donated, sum(total_donations_made) as total_donations_made from donor_donations_by_year where donation_year IN (2009,2010) group by 1) as j on a.donor_id = j.donor_id
+        left join (select donor_id, sum(total_dollars_donated) as total_dollars_donated, sum(total_donations_made) as total_donations_made from donor_donations_by_year where donation_year IN (2011,2012) group by 1) as k on a.donor_id = k.donor_id
+        left join (select donor_id, sum(total_dollars_donated) as total_dollars_donated, sum(total_donations_made) as total_donations_made from donor_donations_by_year where donation_year IN (2013,2014) group by 1) as l on a.donor_id = l.donor_id
+        left join (select donor_id, sum(total_dollars_donated) as total_dollars_donated, sum(total_donations_made) as total_donations_made from donor_donations_by_year where donation_year IN (2015,2016) group by 1) as m on a.donor_id = m.donor_id
+        left join (select donor_id, sum(total_dollars_donated) as total_dollars_donated, sum(total_donations_made) as total_donations_made from donor_donations_by_year where donation_year IN (2017,2018) group by 1) as n on a.donor_id = n.donor_id
+        left join (select donor_id, sum(total_dollars_donated) as total_dollars_donated, sum(total_donations_made) as total_donations_made from donor_donations_by_year where donation_year IN (2019,2020) group by 1) as o on a.donor_id = o.donor_id
+    where
+        c.row_rank = 1
+        and d.row_rank2 = 1
+)
 
 select
     *
@@ -223,6 +296,70 @@ from nyu-cap-ae.elt_ohio.donors as d;
 
 -- Create final donors table
 create or replace table `nyu-cap-ae.elt_ohio.donors` as
-select a.*, b.token as donor_career
+select
+    a.donor_id
+    , donor_first_name
+    , donor_last_name
+    , donor_occupation
+    , b.token as donor_profession
+    , donor_city
+    , a.donor_state
+    , a.donor_zip
+    , a.donor_zip4
+    , a.donor_original_address
+    , a.address_number
+    , a.street_name_pre_directional
+    , a.street_name
+    , a.street_name_type
+    , a.street_name_post_directional
+    , a.occupancy_type
+    , a.occupancy_identifer
+    , a.usps_box_id
+    , a.dollars_donated_2000_cycle
+    , a.donations_made_2000_cycle
+    , a.dollars_donated_2002_cycle
+    , a.donations_made_2002_cycle
+    , a.dollars_donated_2004_cycle
+    , a.donations_made_2004_cycle
+    , a.dollars_donated_2006_cycle
+    , a.donations_made_2006_cycle
+    , a.dollars_donated_2008_cycle
+    , a.donations_made_2008_cycle
+    , a.dollars_donated_2010_cycle
+    , a.donations_made_2010_cycle
+    , a.dollars_donated_2012_cycle
+    , a.donations_made_2012_cycle
+    , a.dollars_donated_2014_cycle
+    , a.donations_made_2014_cycle
+    , a.dollars_donated_2016_cycle
+    , a.donations_made_2016_cycle
+    , a.dollars_donated_2018_cycle
+    , a.donations_made_2018_cycle
+    , a.dollars_donated_2020_cycle
+    , a.donations_made_2020_cycle
+    , a.total_donations_made_all_time
+    , a.total_dollars_all_time
+    , a.republican_donations
+    , a.republican_dollars
+    , a.democrat_donations
+    , a.democrat_dollars
+    , a.other_party_dollars
+    , a.other_party_donations
+    , a.house_donations
+    , a.house_dollars
+    , a.senate_donations
+    , a.senate_dollars
+    , a.treasurer_donations
+    , a.treasurer_dollars
+    , a.secretary_of_state_donations
+    , a.secretary_of_state_dollars
+    , a.governor_donations
+    , a.governor_dollars
+    , a.auditor_donations
+    , a.auditor_dollars
+    , a.attorney_general_donations
+    , a.attorney_general_dollars
+    , a.undeclared_donations
+    , a.undeclared_dollars
 from `nyu-cap-ae.elt_ohio.donors` a
 inner join `nyu-cap-ae.junk.donor_id_occ_token` b on a.donor_id = b.donor_id;
