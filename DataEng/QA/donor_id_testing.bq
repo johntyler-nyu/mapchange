@@ -1,0 +1,47 @@
+-- Match Testing
+
+with voters_sample as (
+select
+LEFT(FIRST_NAME,3)||LEFT(LAST_NAME,4)||RESIDENTIAL_ZIP||LEFT(RESIDENTIAL_CITY,2)||LEFT(RESIDENTIAL_ADDRESS1,2) as voter_id
+from
+`nyu-cap-ae.junk.voterfiles_dataprep`
+),
+
+donors_sample as (
+select
+LEFT(donor_first_name,3)||LEFT(donor_last_name,4)||donor_zip||left(donor_city,2)||left(donor_original_address,2) as donor_id
+from
+`nyu-cap-ae.junk.individual_contributions_parsed_addresses`
+where donor_state = 'OH'
+)
+
+select
+count(distinct(donor_id))
+from
+voters_sample a
+inner join donors_sample b on a.voter_id = b.donor_id;
+
+-- Voter ID Testing
+
+with voters_sample as (
+select
+LEFT(FIRST_NAME,3)||LEFT(LAST_NAME,4)||RESIDENTIAL_ZIP||LEFT(RESIDENTIAL_CITY,2)||LEFT(RESIDENTIAL_ADDRESS1,2) as voter_id
+from
+`nyu-cap-ae.junk.voterfiles_dataprep`
+)
+
+select count(distinct(voter_id))
+from voters_sample;
+
+-- Donor ID Testing
+
+with donors_sample as (
+select
+LEFT(donor_first_name,3)||LEFT(donor_last_name,4)||donor_zip||left(donor_city,2)||left(donor_original_address,2) as donor_id
+from
+`nyu-cap-ae.junk.individual_contributions_parsed_addresses`
+where donor_state = 'OH'
+)
+
+select count(distinct(donor_id))
+from donors_sample;
