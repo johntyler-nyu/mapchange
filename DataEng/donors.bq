@@ -3,7 +3,7 @@ create or replace table `nyu-cap-ae.elt_ohio.donors` as
     with contributions_with_ids as (
     select
         *
-        , LEFT(donor_first_name,3)||LEFT(donor_last_name,2)||donor_zip||left(donor_city, 3)||left(donor_original_address,2) as donor_id
+        , LEFT(donor_first_name,3)||LEFT(donor_last_name,4)||donor_zip||left(donor_city, 1)||left(donor_original_address,2) as donor_id
     from
         `nyu-cap-ae.junk.individual_contributions_parsed_addresses`
 ),
@@ -57,16 +57,16 @@ donor_summary as (
 
 donor_occupation_demo as (
     select
-        LEFT(donor_first_name,3)||LEFT(donor_last_name,2)||donor_zip||left(donor_city, 3)||left(donor_original_address,2) as donor_id,
+        LEFT(donor_first_name,3)||LEFT(donor_last_name,4)||donor_zip||left(donor_city, 1)||left(donor_original_address,2)  as donor_id,
         donor_occupation,
-        row_number() over(partition by LEFT(donor_first_name,3)||LEFT(donor_last_name,2)||donor_zip||left(donor_city, 3)||left(donor_original_address,2)
+        row_number() over(partition by LEFT(donor_first_name,3)||LEFT(donor_last_name,4)||donor_zip||left(donor_city, 1)||left(donor_original_address,2)
             order by report_year desc) as row_rank
     from `nyu-cap-ae.junk.individual_contributions_parsed_addresses`
 ),
 
 donor_address_demo as (
     select
-        LEFT(donor_first_name,3)||LEFT(donor_last_name,2)||donor_zip||left(donor_city, 3)||left(donor_original_address,2) as donor_id
+        LEFT(donor_first_name,3)||LEFT(donor_last_name,4)||donor_zip||left(donor_city, 1)||left(donor_original_address,2)  as donor_id
         , donor_original_address
         , address_number
         , street_name_pre_directional
@@ -76,14 +76,14 @@ donor_address_demo as (
         , occupancy_type
         , occupancy_identifer
         , usps_box_id
-        , row_number() over(partition by LEFT(donor_first_name,3)||LEFT(donor_last_name,2)||donor_zip||left(donor_city, 3)||left(donor_original_address,2)
+        , row_number() over(partition by LEFT(donor_first_name,3)||LEFT(donor_last_name,4)||donor_zip||left(donor_city, 1)||left(donor_original_address,2)
             order by report_year desc) as row_rank2
     from `nyu-cap-ae.junk.individual_contributions_parsed_addresses`
 ),
 
 donor_donations_by_year as (
     select
-        LEFT(donor_first_name,3)||LEFT(donor_last_name,2)||donor_zip||left(donor_city, 3)||left(donor_original_address,2) as donor_id
+        LEFT(donor_first_name,3)||LEFT(donor_last_name,4)||donor_zip||left(donor_city, 1)||left(donor_original_address,2) as donor_id
         , cast(left(report_year,4) as numeric) as donation_year
         , sum(contribution_amount) as total_dollars_donated
         , count(distinct(contribution_id)) as total_donations_made
