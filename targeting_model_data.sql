@@ -6,7 +6,7 @@ with voters as (
         b.donor_id,
         b.FIRST_NAME,
         b.LAST_NAME,
-        b.CITY,
+        b.RESIDENTIAL_CITY,
         b.RESIDENTIAL_STATE,
         b.RESIDENTIAL_ZIP,
         b.age as voter_age,
@@ -46,7 +46,7 @@ select
     , b.donor_profession
     , a.voter_age
     , a.voter_party_affiliation
-    , a.CITY as voter_city
+    , a.RESIDENTIAL_CITY as voter_city
     , a.RESIDENTIAL_STATE as voter_state
     , a.RESIDENTIAL_ZIP as voter_zip
     , b.dollars_donated_2000_cycle
