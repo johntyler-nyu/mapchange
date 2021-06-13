@@ -4,6 +4,11 @@ create or replace table `nyu-cap-ae.final.targeting_model_data` as
 with voters as (
     select
         b.donor_id,
+        b.FIRST_NAME,
+        b.LAST_NAME,
+        b.CITY,
+        b.RESIDENTIAL_STATE,
+        b.RESIDENTIAL_ZIP,
         b.age as voter_age,
         b.PARTY_AFFILIATION as voter_party_affiliation,
         b.GENERAL_2000_11_07,
@@ -35,16 +40,15 @@ with voters as (
 
 select
     a.donor_id
-    , b.donor_first_name
-    , b.donor_last_name
+    , a.FIRST_NAME as voter_first_name
+    , a.LAST_NAME as voter_last_name
     , b.donor_occupation
     , b.donor_profession
     , a.voter_age
     , a.voter_party_affiliation
-    , b.donor_city
-    , b.donor_state
-    , b.donor_zip
-    , b.donor_zip4
+    , a.CITY as voter_city
+    , a.RESIDENTIAL_STATE as voter_state
+    , a.RESIDENTIAL_ZIP as voter_zip
     , b.dollars_donated_2000_cycle
     , b.donations_made_2000_cycle
     , b.dollars_donated_2002_cycle
@@ -121,4 +125,4 @@ update `nyu-cap-ae.final.targeting_model_data` set donor_status = 0
 where total_dollars_all_time = 0 or total_dollars_all_time is null;
 
 update `nyu-cap-ae.final.targeting_model_data` set donor_status = 1
-where total_dollars_all_time > 0; 
+where total_dollars_all_time > 0;
