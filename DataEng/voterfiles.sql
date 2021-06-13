@@ -7,3 +7,5 @@ select *
 ,date_diff(CURRENT_DATE(),DATE_OF_BIRTH, YEAR) as age
 ,LEFT(FIRST_NAME,3)||LEFT(LAST_NAME,4)||RESIDENTIAL_ZIP||LEFT(RESIDENTIAL_CITY,1)||LEFT(RESIDENTIAL_ADDRESS1,2) as donor_id
 from `nyu-cap-ae.junk.voterfiles_dataprep`;
+
+delete from `nyu-cap-ae.elt_ohio.voterfiles` where donor_id is null;
