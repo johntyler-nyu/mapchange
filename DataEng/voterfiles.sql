@@ -8,3 +8,7 @@ select *
 from `nyu-cap-ae.junk.voterfiles_dataprep_20210717_205010`;
 
 delete from `nyu-cap-ae.elt_ohio.voterfiles` where donor_id is null;
+
+update `nyu-cap-ae.elt_ohio.voterfiles` as a
+  set a.AGE = 49
+where a.DATE_OF_BIRTH < "1901-12-31";
